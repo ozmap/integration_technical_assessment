@@ -53,5 +53,3 @@ De modo que a sua solução seja passível de ser avaliada, a mesma deverá ser 
   - [Leonardo Bittencourt (leonardo-rb)](https://github.com/leonardo-rb)
   - [Mateus Souza (mateusdevoz)](https://github.com/mateusdevoz)
 * Publicar os seus commits em um branch, como o nome no formato `solution/[your-github-username]`.
-
-[**Voltar para o sumário**](#sumario)
