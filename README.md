@@ -13,24 +13,24 @@
 <a id="tarefa"></a>
 ## 1. Tarefa
 
- O objetivo deste teste envolve a execução de algumas tarefas desempenhadas no setor de integrações da empresa, onde esteremos avaliando a solução desenvolvida pelo condidato para o problema proposto. 
- A tarefa consiste no desenvolvimento de uma aplicação backend em Node.js ou Typescript, que deverá rodar a cada X minutos, realizando consultas em uma API pública, e a partir dos dados vindos desta API, criar elementos via API em uma base OZmap. 
- Requisitos adicionais:
- * Logger registrando as ações realizadas pela aplicação;
- * Endpoint para visualização dos logs da aplicação pelo navegador;
- * A cada execução da aplicação, deve ser exportado um relatório (deverá ser incrementado) sobre as ações realizadas, incluindo as que obtiverem erro;
- * Elaborar uma documentação para a aplicação.
+ A avaliação envolve a execução de algumas tarefas desempenhadas no setor de integração da empresa, com o objetivo de avaliar a solução desenvolvida pelo candidato para o problema proposto. 
+ A tarefa consiste no desenvolvimento de uma aplicação backend em Node.js ou Typescript que deverá ser executada a cada X minutos. Essa aplicação realizará consultas em uma API pública e utilizará os dados obtidos para criar elementos na base OZmap por meio de uma API. Além disso, são requisitos adicionais:
+ * Tempo de intervalo entre cada execução da aplicação definido por uma variável de ambiente.
+ * Implementação de um logger para registrar as ações realizadas pela aplicação.
+ * Criação de um endpoint para visualização dos logs da aplicação por meio do navegador.
+ * A cada execução da aplicação, deverá ser exportado um relatório que será incrementado com informações sobre as ações realizadas, incluindo aquelas que apresentarem erro.
+ * Elaboração de uma documentação para a aplicação.
  
 <a id="instrucoes"></a>
 ## 2. Instruções
 
-A API externa a ser consultada retorna, a cada requisição, um usuário aleatório. Na primeira execução da aplicação, deve consultar a API externa e usar os dados para criar um imóvel com cliente no OZmap, e nas execuções seguintes, criar dois imóveis com cliente no OZmap: um com os mesmos dados da execução anterior, e outro com dados novos, coletados novamente na API externa. Para definição dos atributos do imóvel com cliente no OZmap, considerar as seguintes orientações: 
- * Dados fixos: box=64ac62633f250c0014f65dc2, auto_connect=false, force=true;
+ A API externa consultada retorna um usuário aleatório a cada requisição. Na primeira execução da aplicação, ela deve consultar a API externa e usar os dados obtidos para criar um imóvel com cliente no OZmap. Nas execuções seguintes, a aplicação deve tentar criar dois imóveis com cliente no OZmap: um com os mesmos dados da execução anterior e outro com novos dados coletados novamente na API externa. Para definir os atributos do imóvel com cliente no OZmap, considere as seguintes orientações:
+ * Dados fixos: box = 64ac62633f250c0014f65dc2, auto_connect = false, force = true;
  * Dados variáveis:
-   address=location.street.name + location.street.number + location.postcode + location.city;
-   client.name=name.first + name.last;
-   client.code=name.first + "." + name.last;
-   client.observation=email;
+   address = location.street.name + location.street.number + location.postcode + location.city + location.state + location.country;
+   client.name = name.first + name.last;
+   client.code = name.first + "." + name.last;
+   client.observation = email;
 
 <a id="dados"></a>
 ## 3. Dados necessários
@@ -45,11 +45,11 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2R1bGUiOiJhcGkiLCJ1c2VyIjoiNWQ5ZjNmYjg
 <a id="submissao"></a>
 ## 4. Submissão da solução
 
-De modo que a sua solução seja passível de ser avaliada, a mesma deverá ser submetida segundo as estipulações listadas abaixo:
+Para que sua solução possa ser avaliada, ela precisa ser submetida de acordo com as estipulações listadas abaixo:
 
-* Realizar o fork deste repositório;
-* Alterar a visibilidade do fork para privada;
-* Adicionar como contribuidores os seguintes usuários:
+* Realize o fork deste repositório.
+* Altere a visibilidade do fork para privada.
+* Adicione os seguintes usuários como colaboradores:
   - [Leonardo Bittencourt (leonardo-rb)](https://github.com/leonardo-rb)
   - [Mateus Souza (mateusdevoz)](https://github.com/mateusdevoz)
-* Publicar os seus commits em um branch, como o nome no formato `solution/[your-github-username]`.
+* Faça os commits da sua solução em um branch com o seguinte formato de nome: `solution/[your-github-username]`.
