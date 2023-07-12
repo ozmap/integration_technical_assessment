@@ -34,7 +34,7 @@
 
 <a id="dados"></a>
 ## 3. Dados necessários
-* API externa: https://randomuser.me/api;
+* API externa: https://randomuser.me/api
 * Documentação API OZmap: https://ozmap.stoplight.io/docs/ozmap/180b1534fb63f-cria-um-imovel
 * URL da base OZmap: http://sandbox.ozmap.com.br:9090
 * Chave-api da base OZmap:
