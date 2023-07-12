@@ -29,7 +29,7 @@
  * Dados variáveis:
    address = location.street.name + location.street.number + location.postcode + location.city + location.state + location.country;
    client.name = name.first + name.last;
-   client.code = name.first + "." + name.last;
+   client.code = name.first + "." + name.last (tudo em minúsculo);
    client.observation = email;
 
 <a id="dados"></a>
