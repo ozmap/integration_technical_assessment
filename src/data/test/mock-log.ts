@@ -8,4 +8,9 @@ export class LoggerSpy implements Logger {
     this.method = 'info';
     this.log = log;
   }
+
+  async error (log: any): Promise<void> {
+    this.method = 'error';
+    this.log = log;
+  }
 }

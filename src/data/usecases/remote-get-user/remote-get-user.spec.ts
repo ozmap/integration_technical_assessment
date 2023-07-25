@@ -51,4 +51,23 @@ describe('RemoteGetUser', () => {
     expect(loggerSpy.method).toBe('info');
     expect(loggerSpy.log).toEqual({ message: 'Retrieving new user information' });
   });
+
+  test('should call Logger.error() if HttpClient returns 500', async () => {
+    const { sut, httpClientSpy, loggerSpy } = makeSut();
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.serverError,
+      body: { error: 'Uh oh, something has gone wrong.' }
+    };
+
+    try {
+      await sut.get();
+    } catch (error) {
+    }
+
+    expect(loggerSpy.method).toBe('error');
+    expect(loggerSpy.log).toEqual({
+      message: 'An error occurred during user information retrieval',
+      error: new UnexpectedError(httpClientSpy.response.body.error)
+    });
+  });
 });
