@@ -16,6 +16,6 @@ export class HttpClientSpy<R = any> implements HttpClient<R> {
     this.url = request.url;
     this.headers = request.headers;
     this.data = request.data;
-    return null;
+    return this.response;
   }
 }

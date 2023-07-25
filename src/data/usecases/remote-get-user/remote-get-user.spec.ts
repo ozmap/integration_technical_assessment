@@ -1,4 +1,6 @@
+import { UnexpectedError } from '../../../domain/errors/unexpected-error';
 import { HttpClientSpy } from '../../test';
+import { HttpStatusCode } from '../../types';
 import { RemoteGetUser } from './remote-get-user';
 
 type SutTypes = {
@@ -24,5 +26,17 @@ describe('RemoteGetUser', () => {
 
     expect(httpClientSpy.url).toBe(url);
     expect(httpClientSpy.method).toBe('get');
+  });
+
+  test('should throw UnexpectedError if HttpClient returns 500', async () => {
+    const { sut, httpClientSpy } = makeSut();
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.serverError,
+      body: { error: 'Uh oh, something has gone wrong.' }
+    };
+
+    const response = sut.get();
+
+    await expect(response).rejects.toThrow(new UnexpectedError(httpClientSpy.response.body.error));
   });
 });
