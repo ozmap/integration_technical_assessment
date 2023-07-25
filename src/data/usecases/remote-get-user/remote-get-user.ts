@@ -1,7 +1,8 @@
+import { UnexpectedError } from '../../../domain/errors/unexpected-error';
 import { type UserModel } from '../../../domain/models';
 import { type GetUser } from '../../../domain/usecases';
 import { type HttpClient } from '../../interfaces';
-import { type HttpRequest } from '../../types';
+import { HttpStatusCode, type HttpRequest } from '../../types';
 
 export class RemoteGetUser implements GetUser {
   constructor (
@@ -16,7 +17,10 @@ export class RemoteGetUser implements GetUser {
       method: 'get',
       url: this.url
     };
-    await this.httpClient.request(request);
-    return null;
+    const httpResponse = await this.httpClient.request(request);
+    switch (httpResponse.statusCode) {
+      case HttpStatusCode.serverError: throw new UnexpectedError(httpResponse.body.error);
+      default: return null;
+    }
   }
 }
