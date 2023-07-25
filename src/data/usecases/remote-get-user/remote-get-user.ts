@@ -53,6 +53,10 @@ export class RemoteGetUser implements GetUser {
       case HttpStatusCode.ok: {
         const [userData] = httpResponse.body.results;
         const user = this.mapResponseToUserModel(userData);
+        await this.logger.info({
+          message: 'User information was successfully retrieved',
+          data: user
+        });
         return user;
       }
       case HttpStatusCode.serverError: {
