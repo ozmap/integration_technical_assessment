@@ -1,19 +1,22 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
-import { HttpClientSpy } from '../../test';
+import { HttpClientSpy, LoggerSpy } from '../../test';
 import { HttpStatusCode } from '../../types';
 import { RemoteGetUser } from './remote-get-user';
 
 type SutTypes = {
   sut: RemoteGetUser
   httpClientSpy: HttpClientSpy
+  loggerSpy: LoggerSpy
 };
 
 const makeSut = (url: string = 'any_url'): SutTypes => {
   const httpClientSpy = new HttpClientSpy();
-  const sut = new RemoteGetUser(url, httpClientSpy);
+  const loggerSpy = new LoggerSpy();
+  const sut = new RemoteGetUser(url, httpClientSpy, loggerSpy);
   return {
     sut,
-    httpClientSpy
+    httpClientSpy,
+    loggerSpy
   };
 };
 
@@ -38,5 +41,14 @@ describe('RemoteGetUser', () => {
     const response = sut.get();
 
     await expect(response).rejects.toThrow(new UnexpectedError(httpClientSpy.response.body.error));
+  });
+
+  test('should call Logger.info() with correct value', async () => {
+    const { sut, loggerSpy } = makeSut();
+
+    await sut.get();
+
+    expect(loggerSpy.method).toBe('info');
+    expect(loggerSpy.log).toEqual({ message: 'Retrieving new user information' });
   });
 });
