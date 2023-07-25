@@ -31,7 +31,7 @@ describe('RemoteGetUser', () => {
     expect(httpClientSpy.method).toBe('get');
   });
 
-  test('should throw UnexpectedError if HttpClient returns 500', async () => {
+  test('should throw UnexpectedError if HttpClient returns an http error response', async () => {
     const { sut, httpClientSpy } = makeSut();
     httpClientSpy.response = {
       statusCode: HttpStatusCode.serverError,
@@ -52,7 +52,7 @@ describe('RemoteGetUser', () => {
     expect(infoSpy).toHaveBeenCalledWith({ message: 'Retrieving new user information' });
   });
 
-  test('should call Logger.error() if HttpClient returns 500', async () => {
+  test('should call Logger.error() if HttpClient returns an http error response', async () => {
     const { sut, httpClientSpy, loggerSpy } = makeSut();
     httpClientSpy.response = {
       statusCode: HttpStatusCode.serverError,

@@ -59,7 +59,7 @@ export class RemoteGetUser implements GetUser {
         });
         return user;
       }
-      case HttpStatusCode.serverError: {
+      default: {
         const error = new UnexpectedError(httpResponse.body.error);
         await this.logger.error({
           message: 'An error occurred during user information retrieval',
@@ -67,7 +67,6 @@ export class RemoteGetUser implements GetUser {
         });
         throw error;
       }
-      default: return null;
     }
   }
 }
