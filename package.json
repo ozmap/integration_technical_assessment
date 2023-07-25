@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Technical assessment for the position of junior developer in the OZmap integration sector.",
   "scripts": {
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "build": "rm -rf dist/ && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -14,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/gabrielrnascimento/integration_technical_assessment/issues"
   },
-  "homepage": "https://github.com/gabrielrnascimento/integration_technical_assessment#readme"
+  "homepage": "https://github.com/gabrielrnascimento/integration_technical_assessment#readme",
+  "devDependencies": {
+    "@types/node": "^20.4.4",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.1.6"
+  }
 }
