@@ -1,5 +1,5 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
-import { HttpClientSpy, LoggerSpy } from '../../test';
+import { HttpClientSpy, LoggerSpy, mockUserModel } from '../../test';
 import { HttpStatusCode } from '../../types';
 import { RemoteGetUser } from './remote-get-user';
 
@@ -45,11 +45,11 @@ describe('RemoteGetUser', () => {
 
   test('should call Logger.info() with correct value', async () => {
     const { sut, loggerSpy } = makeSut();
+    const infoSpy = jest.spyOn(loggerSpy, 'info');
 
     await sut.get();
 
-    expect(loggerSpy.method).toBe('info');
-    expect(loggerSpy.log).toEqual({ message: 'Retrieving new user information' });
+    expect(infoSpy).toHaveBeenCalledWith({ message: 'Retrieving new user information' });
   });
 
   test('should call Logger.error() if HttpClient returns 500', async () => {
@@ -69,5 +69,13 @@ describe('RemoteGetUser', () => {
       message: 'An error occurred during user information retrieval',
       error: new UnexpectedError(httpClientSpy.response.body.error)
     });
+  });
+
+  test('should return UserModel if HttpClient returns 200', async () => {
+    const { sut } = makeSut();
+
+    const response = await sut.get();
+
+    expect(response).toEqual(mockUserModel());
   });
 });
