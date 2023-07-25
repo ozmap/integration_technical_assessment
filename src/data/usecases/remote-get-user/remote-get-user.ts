@@ -21,7 +21,14 @@ export class RemoteGetUser implements GetUser {
     };
     const httpResponse = await this.httpClient.request(request);
     switch (httpResponse.statusCode) {
-      case HttpStatusCode.serverError: throw new UnexpectedError(httpResponse.body.error);
+      case HttpStatusCode.serverError: {
+        const error = new UnexpectedError(httpResponse.body.error);
+        await this.logger.error({
+          message: 'An error occurred during user information retrieval',
+          error
+        });
+        throw error;
+      }
       default: return null;
     }
   }
