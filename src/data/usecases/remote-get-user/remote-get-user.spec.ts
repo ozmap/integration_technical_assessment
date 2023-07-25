@@ -1,11 +1,24 @@
 import { HttpClientSpy } from '../../test';
 import { RemoteGetUser } from './remote-get-user';
 
+type SutTypes = {
+  sut: RemoteGetUser
+  httpClientSpy: HttpClientSpy
+};
+
+const makeSut = (url: string = 'any_url'): SutTypes => {
+  const httpClientSpy = new HttpClientSpy();
+  const sut = new RemoteGetUser(url, httpClientSpy);
+  return {
+    sut,
+    httpClientSpy
+  };
+};
+
 describe('RemoteGetUser', () => {
   test('should call HttpClient with correct values', async () => {
-    const httpClientSpy = new HttpClientSpy();
-    const url = 'any_url';
-    const sut = new RemoteGetUser(url, httpClientSpy);
+    const url = 'another_url';
+    const { sut, httpClientSpy } = makeSut(url);
 
     await sut.get();
 
