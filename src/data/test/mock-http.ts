@@ -22,6 +22,14 @@ export class HttpClientSpy<R = any> implements HttpClient<R> {
   }
 }
 
+export const mockHttpRequest = (): HttpRequest => ({
+  method: 'post',
+  url: 'any_url',
+  body: { field: 'any_body_value' },
+  headers: { field: 'any_header_value' },
+  data: { field: 'any_data_value' }
+});
+
 export const mockRandomUserApiResponse = (): any => ({
   results: [
     {
