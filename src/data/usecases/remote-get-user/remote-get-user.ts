@@ -13,6 +13,35 @@ export class RemoteGetUser implements GetUser {
     this.httpClient = httpClient;
   }
 
+  private mapResponseToUserModel ({ location, name, email }: any): UserModel {
+    const streetName: string = location.street.name;
+    const streetNumber: string = location.street.number;
+    const postcode: string = location.postcode;
+    const city: string = location.city;
+    const state: string = location.state;
+    const country: string = location.country;
+
+    const addressArray = [streetName, streetNumber, postcode, city, state, country];
+    const address = addressArray.join(' ');
+
+    const userFirstName = name.first;
+    const userLastName = name.last;
+
+    const userArray = [userFirstName, userLastName];
+    const user = userArray.join(' ');
+
+    const code = userArray.map((item: string) => item.toLowerCase()).join('.');
+
+    const observation = email;
+
+    return {
+      address,
+      name: user,
+      code,
+      observation
+    };
+  };
+
   async get (): Promise<UserModel> {
     await this.logger.info({ message: 'Retrieving new user information' });
     const request: HttpRequest = {
@@ -21,6 +50,11 @@ export class RemoteGetUser implements GetUser {
     };
     const httpResponse = await this.httpClient.request(request);
     switch (httpResponse.statusCode) {
+      case HttpStatusCode.ok: {
+        const [userData] = httpResponse.body.results;
+        const user = this.mapResponseToUserModel(userData);
+        return user;
+      }
       case HttpStatusCode.serverError: {
         const error = new UnexpectedError(httpResponse.body.error);
         await this.logger.error({
