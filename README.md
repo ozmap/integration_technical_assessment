@@ -48,8 +48,4 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2R1bGUiOiJhcGkiLCJ1c2VyIjoiNWQ5ZjNmYjg
 Para que sua solução possa ser avaliada, ela precisa ser submetida de acordo com as estipulações listadas abaixo:
 
 * Realize o fork deste repositório.
-* Altere a visibilidade do fork para privada.
-* Adicione os seguintes usuários como colaboradores:
-  - [Leonardo Bittencourt (leonardo-rb)](https://github.com/leonardo-rb)
-  - [Mateus Souza (mateusdevoz)](https://github.com/mateusdevoz)
 * Faça os commits da sua solução em um branch com o seguinte formato de nome: `solution/[your-github-username]`.
