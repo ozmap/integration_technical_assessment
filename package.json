@@ -11,7 +11,9 @@
     "test:staged": "npm test -- --findRelatedTests",
     "test:coverage": "npm test -- --coverage",
     "build": "rm -rf dist/ && tsc",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "up": "docker compose up -d",
+    "down": "docker compose down"
   },
   "repository": {
     "type": "git",
