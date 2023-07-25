@@ -71,6 +71,18 @@ describe('RemoteGetUser', () => {
     });
   });
 
+  test('should call Logger.info() with user data if HttpClient returns 200', async () => {
+    const { sut, loggerSpy } = makeSut();
+    const infoSpy = jest.spyOn(loggerSpy, 'info');
+
+    await sut.get();
+
+    expect(infoSpy).toHaveBeenCalledWith({
+      message: 'User information was successfully retrieved',
+      data: mockUserModel()
+    });
+  });
+
   test('should return UserModel if HttpClient returns 200', async () => {
     const { sut } = makeSut();
 
