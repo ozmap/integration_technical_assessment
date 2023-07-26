@@ -28,5 +28,7 @@ export class WinstonLogger implements Logger {
     this.logger.info(JSON.stringify(log));
   }
 
-  error: (log: any) => Promise<void>;
+  async error (log: any): Promise<void> {
+    JSON.stringify(log);
+  }
 }
