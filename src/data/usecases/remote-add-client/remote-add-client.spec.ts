@@ -1,6 +1,7 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
 import { HttpClientSpy, LoggerSpy, ReporterSpy, mockAddClientApiResponse, mockAddClientDTO, mockClientModel } from '../../test';
 import { HttpStatusCode, ReportStatus, type ReportEntry } from '../../types';
+import { LogReportHelper } from '../../util';
 import { RemoteAddClient } from './remote-add-client';
 
 type SutTypes = {
@@ -18,7 +19,8 @@ const makeSut = (url: string = 'any_url'): SutTypes => {
   };
   const loggerSpy = new LoggerSpy();
   const reporterSpy = new ReporterSpy();
-  const sut = new RemoteAddClient(url, httpClientSpy, loggerSpy, reporterSpy);
+  const logReportHelper = new LogReportHelper(loggerSpy, reporterSpy);
+  const sut = new RemoteAddClient(url, httpClientSpy, logReportHelper);
   return {
     sut,
     httpClientSpy,

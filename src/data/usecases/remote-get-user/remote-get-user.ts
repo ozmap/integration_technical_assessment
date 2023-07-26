@@ -1,20 +1,20 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
 import { type UserModel } from '../../../domain/models';
 import { type GetUser } from '../../../domain/usecases';
-import { type Logger, type HttpClient, type Reporter } from '../../interfaces';
-import { HttpStatusCode, type HttpRequest, type ReportEntry, ReportStatus } from '../../types';
+import { type HttpClient } from '../../interfaces';
+import { HttpStatusCode, type HttpRequest } from '../../types';
+import { type LogReportHelper } from '../../util';
 
 export class RemoteGetUser implements GetUser {
   constructor (
     private readonly url: string,
     private readonly httpClient: HttpClient,
-    private readonly logger: Logger,
-    private readonly reporter: Reporter
+    private readonly logReportHelper: LogReportHelper
+
   ) {
     this.url = url;
     this.httpClient = httpClient;
-    this.logger = logger;
-    this.reporter = reporter;
+    this.logReportHelper = logReportHelper;
   }
 
   private mapResponseToUserModel ({ location, name, email }: any): UserModel {
@@ -46,40 +46,8 @@ export class RemoteGetUser implements GetUser {
     };
   };
 
-  private async handleLogAndReport ({ action, status, message, data }: ReportEntry): Promise<void> {
-    this.reporter.append({ action, status, message, data });
-    switch (status) {
-      case ReportStatus.error: { await this.logger.error({ message: action, error: data }); return; }
-      default: { await this.logger.info({ message: action, data }); }
-    }
-  }
-
-  private async logStart (): Promise<void> {
-    await this.handleLogAndReport({
-      action: 'Retrieving new user information',
-      status: ReportStatus.pending
-    });
-  }
-
-  private async logSuccess (response: UserModel): Promise<void> {
-    await this.handleLogAndReport({
-      action: 'User information was successfully retrieved',
-      status: ReportStatus.sucess,
-      data: response
-    });
-  }
-
-  private async logError (error: UnexpectedError): Promise<void> {
-    await this.handleLogAndReport({
-      action: 'An error occurred during user information retrieval',
-      status: ReportStatus.error,
-      data: error,
-      message: error.message
-    });
-  }
-
   async get (): Promise<UserModel> {
-    await this.logStart();
+    await this.logReportHelper.logStart('Retrieving new user information');
     const request: HttpRequest = {
       method: 'get',
       url: this.url
@@ -89,12 +57,12 @@ export class RemoteGetUser implements GetUser {
       case HttpStatusCode.ok: {
         const [userData] = httpResponse.body.results;
         const user = this.mapResponseToUserModel(userData);
-        await this.logSuccess(user);
+        await this.logReportHelper.logSuccess('User information was successfully retrieved', user);
         return user;
       }
       default: {
         const error = new UnexpectedError(httpResponse.body.error);
-        await this.logError(error);
+        await this.logReportHelper.logError('An error occurred during user information retrieval', error);
         throw error;
       }
     }

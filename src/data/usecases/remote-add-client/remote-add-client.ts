@@ -2,56 +2,23 @@ import { UnexpectedError } from '../../../domain/errors/unexpected-error';
 import { type ClientModel } from '../../../domain/models';
 import { type AddClient } from '../../../domain/usecases';
 import { type AddClientDTO } from '../../dtos';
-import { type Reporter, type HttpClient, type Logger } from '../../interfaces';
-import { type ReportEntry, ReportStatus, type HttpRequest, HttpStatusCode } from '../../types';
+import { type HttpClient } from '../../interfaces';
+import { HttpStatusCode, type HttpRequest } from '../../types';
+import { type LogReportHelper } from '../../util/log-report-helper';
 
 export class RemoteAddClient implements AddClient {
   constructor (
     private readonly url: string,
     private readonly httpClient: HttpClient,
-    private readonly logger: Logger,
-    private readonly reporter: Reporter
+    private readonly logReportHelper: LogReportHelper
   ) {
     this.url = url;
     this.httpClient = httpClient;
-    this.logger = logger;
-    this.reporter = reporter;
-  }
-
-  private async handleLogAndReport ({ action, status, message, data }: ReportEntry): Promise<void> {
-    this.reporter.append({ action, status, message, data });
-    switch (status) {
-      case ReportStatus.error: { await this.logger.error({ message: action, error: data }); return; }
-      default: { await this.logger.info({ message: action, data }); }
-    }
-  }
-
-  private async logStart (): Promise<void> {
-    await this.handleLogAndReport({
-      action: 'Creating new client',
-      status: ReportStatus.pending
-    });
-  }
-
-  private async logSuccess (response: ClientModel): Promise<void> {
-    await this.handleLogAndReport({
-      action: 'Client was successfully created',
-      status: ReportStatus.sucess,
-      data: response
-    });
-  }
-
-  private async logError (error: UnexpectedError): Promise<void> {
-    await this.handleLogAndReport({
-      action: 'An error occurred during client creation',
-      status: ReportStatus.error,
-      data: error,
-      message: error.message
-    });
+    this.logReportHelper = logReportHelper;
   }
 
   async add (data: AddClientDTO): Promise<ClientModel> {
-    await this.logStart();
+    await this.logReportHelper.logStart('Creating new client');
     const request: HttpRequest = {
       method: 'post',
       url: this.url,
@@ -64,12 +31,12 @@ export class RemoteAddClient implements AddClient {
     switch (httpResponse.statusCode) {
       case HttpStatusCode.created: {
         const { id } = httpResponse.body;
-        await this.logSuccess({ id });
+        await this.logReportHelper.logSuccess('Client was successfully created', { id });
         return { id };
       }
       default: {
         const error = new UnexpectedError(httpResponse.body.message);
-        await this.logError(error);
+        await this.logReportHelper.logError('An error occurred during client creation', error);
         throw error;
       }
     }
