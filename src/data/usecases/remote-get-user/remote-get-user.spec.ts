@@ -1,22 +1,25 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
-import { HttpClientSpy, LoggerSpy, mockUserModel } from '../../test';
-import { HttpStatusCode } from '../../types';
+import { HttpClientSpy, LoggerSpy, ReporterSpy, mockUserModel } from '../../test';
+import { HttpStatusCode, ReportStatus, type ReportEntry } from '../../types';
 import { RemoteGetUser } from './remote-get-user';
 
 type SutTypes = {
   sut: RemoteGetUser
   httpClientSpy: HttpClientSpy
   loggerSpy: LoggerSpy
+  reporterSpy: ReporterSpy
 };
 
 const makeSut = (url: string = 'any_url'): SutTypes => {
   const httpClientSpy = new HttpClientSpy();
   const loggerSpy = new LoggerSpy();
-  const sut = new RemoteGetUser(url, httpClientSpy, loggerSpy);
+  const reporterSpy = new ReporterSpy();
+  const sut = new RemoteGetUser(url, httpClientSpy, loggerSpy, reporterSpy);
   return {
     sut,
     httpClientSpy,
-    loggerSpy
+    loggerSpy,
+    reporterSpy
   };
 };
 
@@ -50,6 +53,47 @@ describe('RemoteGetUser', () => {
     await sut.get();
 
     expect(infoSpy).toHaveBeenCalledWith({ message: 'Retrieving new user information' });
+  });
+
+  test('should call Reporter.append() with correct values if HttpClient returns 200', async () => {
+    const { sut, reporterSpy } = makeSut();
+    const appendSpy = jest.spyOn(reporterSpy, 'append');
+
+    const reportEntry: ReportEntry = {
+      action: 'User information was successfully retrieved',
+      status: ReportStatus.sucess,
+      data: mockUserModel()
+    };
+
+    await sut.get();
+
+    expect(appendSpy).toHaveBeenCalledWith(reportEntry);
+  });
+
+  test('should call Reporter.append() with correct values if HttpClient returns an http error response', async () => {
+    const { sut, httpClientSpy, reporterSpy } = makeSut();
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.serverError,
+      body: { error: 'Uh oh, something has gone wrong.' }
+    };
+    const appendSpy = jest.spyOn(reporterSpy, 'append');
+
+    let error: Error;
+
+    try {
+      await sut.get();
+    } catch (err) {
+      error = err;
+    }
+
+    const reportEntry: ReportEntry = {
+      action: 'An error occurred during user information retrieval',
+      status: ReportStatus.error,
+      data: error,
+      message: error.message
+    };
+
+    expect(appendSpy).toHaveBeenCalledWith(reportEntry);
   });
 
   test('should call Logger.error() if HttpClient returns an http error response', async () => {
