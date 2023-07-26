@@ -1,10 +1,10 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
-import { HttpClientSpy, LoggerSpy, ReporterSpy, mockRandomUserApiResponse, mockUserModel } from '../../test';
+import { HttpClientSpy, LoggerSpy, ReporterSpy, mockAddClientApiResponse, mockAddClientDTO, mockClientModel } from '../../test';
 import { HttpStatusCode, ReportStatus, type ReportEntry } from '../../types';
-import { RemoteGetUser } from './remote-get-user';
+import { RemoteAddClient } from './remote-add-client';
 
 type SutTypes = {
-  sut: RemoteGetUser
+  sut: RemoteAddClient
   httpClientSpy: HttpClientSpy
   loggerSpy: LoggerSpy
   reporterSpy: ReporterSpy
@@ -12,10 +12,13 @@ type SutTypes = {
 
 const makeSut = (url: string = 'any_url'): SutTypes => {
   const httpClientSpy = new HttpClientSpy();
-  httpClientSpy.response.body = mockRandomUserApiResponse;
+  httpClientSpy.response = {
+    statusCode: HttpStatusCode.created,
+    body: mockAddClientApiResponse
+  };
   const loggerSpy = new LoggerSpy();
   const reporterSpy = new ReporterSpy();
-  const sut = new RemoteGetUser(url, httpClientSpy, loggerSpy, reporterSpy);
+  const sut = new RemoteAddClient(url, httpClientSpy, loggerSpy, reporterSpy);
   return {
     sut,
     httpClientSpy,
@@ -24,49 +27,49 @@ const makeSut = (url: string = 'any_url'): SutTypes => {
   };
 };
 
-describe('RemoteGetUser', () => {
+describe('RemoteAddClient', () => {
   test('should call HttpClient with correct values', async () => {
     const url = 'another_url';
     const { sut, httpClientSpy } = makeSut(url);
 
-    await sut.get();
+    await sut.add(mockAddClientDTO);
 
     expect(httpClientSpy.url).toBe(url);
-    expect(httpClientSpy.method).toBe('get');
+    expect(httpClientSpy.method).toBe('post');
   });
 
   test('should throw UnexpectedError if HttpClient returns an http error response', async () => {
     const { sut, httpClientSpy } = makeSut();
     httpClientSpy.response = {
       statusCode: HttpStatusCode.serverError,
-      body: { error: 'Uh oh, something has gone wrong.' }
+      body: { message: 'Uh oh, something has gone wrong.' }
     };
 
-    const response = sut.get();
+    const response = sut.add(mockAddClientDTO);
 
-    await expect(response).rejects.toThrow(new UnexpectedError(httpClientSpy.response.body.error));
+    await expect(response).rejects.toThrow(new UnexpectedError(httpClientSpy.response.body.message));
   });
 
   test('should call Logger.info() with correct value', async () => {
     const { sut, loggerSpy } = makeSut();
     const infoSpy = jest.spyOn(loggerSpy, 'info');
 
-    await sut.get();
+    await sut.add(mockAddClientDTO);
 
-    expect(infoSpy).toHaveBeenCalledWith({ message: 'Retrieving new user information' });
+    expect(infoSpy).toHaveBeenCalledWith({ message: 'Creating new client' });
   });
 
-  test('should call Reporter.append() with correct values if HttpClient returns 200', async () => {
+  test('should call Reporter.append() with correct values if HttpClient returns 201', async () => {
     const { sut, reporterSpy } = makeSut();
     const appendSpy = jest.spyOn(reporterSpy, 'append');
 
     const reportEntry: ReportEntry = {
-      action: 'User information was successfully retrieved',
+      action: 'Client was successfully created',
       status: ReportStatus.sucess,
-      data: mockUserModel
+      data: mockClientModel
     };
 
-    await sut.get();
+    await sut.add(mockAddClientDTO);
 
     expect(appendSpy).toHaveBeenCalledWith(reportEntry);
   });
@@ -75,20 +78,20 @@ describe('RemoteGetUser', () => {
     const { sut, httpClientSpy, reporterSpy } = makeSut();
     httpClientSpy.response = {
       statusCode: HttpStatusCode.serverError,
-      body: { error: 'Uh oh, something has gone wrong.' }
+      body: { message: 'Uh oh, something has gone wrong.' }
     };
     const appendSpy = jest.spyOn(reporterSpy, 'append');
 
     let error: Error;
 
     try {
-      await sut.get();
+      await sut.add(mockAddClientDTO);
     } catch (err) {
       error = err;
     }
 
     const reportEntry: ReportEntry = {
-      action: 'An error occurred during user information retrieval',
+      action: 'An error occurred during client creation',
       status: ReportStatus.error,
       data: error,
       message: error.message
@@ -101,38 +104,38 @@ describe('RemoteGetUser', () => {
     const { sut, httpClientSpy, loggerSpy } = makeSut();
     httpClientSpy.response = {
       statusCode: HttpStatusCode.serverError,
-      body: { error: 'Uh oh, something has gone wrong.' }
+      body: { message: 'Uh oh, something has gone wrong.' }
     };
 
     try {
-      await sut.get();
+      await sut.add(mockAddClientDTO);
     } catch (error) {
     }
 
     expect(loggerSpy.method).toBe('error');
     expect(loggerSpy.log).toEqual({
-      message: 'An error occurred during user information retrieval',
-      error: new UnexpectedError(httpClientSpy.response.body.error)
+      message: 'An error occurred during client creation',
+      error: new UnexpectedError(httpClientSpy.response.body.message)
     });
   });
 
-  test('should call Logger.info() with user data if HttpClient returns 200', async () => {
+  test('should call Logger.info() with user data if HttpClient returns 201', async () => {
     const { sut, loggerSpy } = makeSut();
     const infoSpy = jest.spyOn(loggerSpy, 'info');
 
-    await sut.get();
+    await sut.add(mockAddClientDTO);
 
     expect(infoSpy).toHaveBeenCalledWith({
-      message: 'User information was successfully retrieved',
-      data: mockUserModel
+      message: 'Client was successfully created',
+      data: mockClientModel
     });
   });
 
-  test('should return UserModel if HttpClient returns 200', async () => {
+  test('should return ClientModel if HttpClient returns 201', async () => {
     const { sut } = makeSut();
 
-    const response = await sut.get();
+    const response = await sut.add(mockAddClientDTO);
 
-    expect(response).toEqual(mockUserModel);
+    expect(response).toEqual(mockClientModel);
   });
 });

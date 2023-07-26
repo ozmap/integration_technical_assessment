@@ -1,4 +1,3 @@
-import { type UserModel } from '../../domain/models';
 import { type HttpClient } from '../interfaces';
 import { type HttpMethod, type HttpResponse, HttpStatusCode, type HttpRequest } from '../types';
 
@@ -9,8 +8,7 @@ export class HttpClientSpy<R = any> implements HttpClient<R> {
   public headers?: any;
   public data?: any;
   public response?: HttpResponse = {
-    statusCode: HttpStatusCode.ok,
-    body: mockRandomUserApiResponse()
+    statusCode: HttpStatusCode.ok
   };
 
   async request (request: HttpRequest): Promise<HttpResponse> {
@@ -30,7 +28,7 @@ export const mockHttpRequest = (): HttpRequest => ({
   data: { field: 'any_data_value' }
 });
 
-export const mockRandomUserApiResponse = (): any => ({
+export const mockRandomUserApiResponse = {
   results: [
     {
       gender: 'female',
@@ -95,11 +93,30 @@ export const mockRandomUserApiResponse = (): any => ({
     page: 1,
     version: '1.4'
   }
-});
+};
 
-export const mockUserModel = (): UserModel => ({
-  address: 'Oak Lawn Ave 9048 8129 Warrnambool Victoria Australia',
-  code: 'priscilla.wood',
-  name: 'Priscilla Wood',
-  observation: 'priscilla.wood@example.com'
-});
+export const mockAddClientApiResponse = {
+  certified: true,
+  status: 0,
+  observation: 'delores.chambers@example.com',
+  tags: [
+    '5da61e20493d9c0006665479'
+  ],
+  implanted: true,
+  onu: {
+    serial_number: '55MAC-05',
+    user_PPPoE: '555401',
+    mac_address: 'mac:0112:454'
+  },
+  kind: 'ftth',
+  name: 'Delores Chambers',
+  code: 'delores.chambers1',
+  creatorData: {
+    id: '64ac1dc33f250c0014f659a2',
+    name: 'teste_integration',
+    username: 'teste_integration'
+  },
+  createdAt: '2023-07-26T18:56:16.720Z',
+  updatedAt: '2023-07-26T18:56:16.720Z',
+  id: '64c16c503f250c0014f6eab5'
+};
