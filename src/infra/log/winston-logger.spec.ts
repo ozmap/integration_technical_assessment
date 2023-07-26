@@ -21,6 +21,17 @@ jest.mock('winston-loki', () => {
   return LokiTransportMock;
 });
 
+type SutTypes = {
+  sut: WinstonLogger
+};
+
+const makeSut = (): SutTypes => {
+  const sut = new WinstonLogger();
+  return {
+    sut
+  };
+};
+
 describe('WinstonLogger', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -28,7 +39,7 @@ describe('WinstonLogger', () => {
 
   test('should create a Winston.Logger with LokiTransport and ConsoleTransport', async () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const sut = new WinstonLogger();
+    const { sut } = makeSut();
 
     expect(winston.createLogger).toHaveBeenCalled();
     expect(LokiTransport).toHaveBeenCalledWith({
@@ -43,7 +54,7 @@ describe('WinstonLogger', () => {
 
   describe('info()', () => {
     test('should call JSON.stringify with correct values', async () => {
-      const sut = new WinstonLogger();
+      const { sut } = makeSut();
       const stringifySpy = jest.spyOn(JSON, 'stringify');
 
       const log = {
@@ -56,7 +67,7 @@ describe('WinstonLogger', () => {
     });
 
     test('should call Winston.Logger.info() with correct values', async () => {
-      const sut = new WinstonLogger();
+      const { sut } = makeSut();
       const mockedLogger = (winston.createLogger as jest.Mock).mock.results[0].value;
 
       const log = {
