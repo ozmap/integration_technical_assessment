@@ -4,7 +4,7 @@ import { type ReportEntry } from '../../data/types';
 import { type Reporter } from '../../data/interfaces/reporter';
 
 export class LocalMarkdownReporter implements Reporter {
-  private readonly entries: ReportEntry[];
+  private entries: ReportEntry[];
   private content: string;
 
   constructor () {
@@ -68,6 +68,8 @@ export class LocalMarkdownReporter implements Reporter {
     const folderName = await this.getFolder();
     const filePath = path.join(folderName, fileName);
     const fileContent = this.content;
+    this.content = '';
+    this.entries = [];
     await writeFile(filePath, fileContent);
   }
 
