@@ -62,7 +62,7 @@ describe('RemoteGetUser', () => {
     const reportEntry: ReportEntry = {
       action: 'User information was successfully retrieved',
       status: ReportStatus.sucess,
-      data: mockUserModel()
+      data: mockUserModel
     };
 
     await sut.get();
@@ -123,7 +123,7 @@ describe('RemoteGetUser', () => {
 
     expect(infoSpy).toHaveBeenCalledWith({
       message: 'User information was successfully retrieved',
-      data: mockUserModel()
+      data: mockUserModel
     });
   });
 
@@ -132,6 +132,6 @@ describe('RemoteGetUser', () => {
 
     const response = await sut.get();
 
-    expect(response).toEqual(mockUserModel());
+    expect(response).toEqual(mockUserModel);
   });
 });

@@ -1,4 +1,3 @@
-import { type UserModel } from '../../domain/models';
 import { type HttpClient } from '../interfaces';
 import { type HttpMethod, type HttpResponse, HttpStatusCode, type HttpRequest } from '../types';
 
@@ -95,11 +94,4 @@ export const mockRandomUserApiResponse = (): any => ({
     page: 1,
     version: '1.4'
   }
-});
-
-export const mockUserModel = (): UserModel => ({
-  address: 'Oak Lawn Ave 9048 8129 Warrnambool Victoria Australia',
-  code: 'priscilla.wood',
-  name: 'Priscilla Wood',
-  observation: 'priscilla.wood@example.com'
 });
