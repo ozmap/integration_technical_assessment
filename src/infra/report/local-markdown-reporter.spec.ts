@@ -125,9 +125,20 @@ describe('LocalMarkdownReporter', () => {
       const writeFileSpy = jest.spyOn(fs, 'writeFile');
 
       await sut.generate();
-      const reportContent = ((sut as any).content as string);
+      const reportContent = `# Relatório de Execução - Data: ${mockDateTime}\n\n`;
 
       expect(writeFileSpy).toHaveBeenCalledWith(`reports/relatorio_${mockDateTime}.md`, reportContent);
+    });
+
+    test('should clear entries and content when report is saved', async () => {
+      const { sut } = makeSut();
+
+      await sut.generate();
+      const reportContent = ((sut as any).content as string);
+      const reportEntries = ((sut as any).entries as ReportEntry[]);
+
+      expect(reportContent).toBe('');
+      expect(reportEntries).toEqual([]);
     });
   });
 });
