@@ -1,4 +1,4 @@
-import { type ReportEntry } from '../../data/types';
+import { ReportStatus, type ReportEntry } from '../../data/types';
 import { LocalMarkdownReporter } from './local-markdown-reporter';
 
 import fs from 'fs/promises';
@@ -39,7 +39,7 @@ describe('LocalMarkdownReporter', () => {
 
       const data: ReportEntry = {
         action: 'Unit test',
-        status: 'sucesso'
+        status: ReportStatus.sucess
       };
 
       sut.append(data);
@@ -76,18 +76,18 @@ describe('LocalMarkdownReporter', () => {
       const entries: ReportEntry[] = [
         {
           action: 'action1',
-          status: 'erro',
+          status: ReportStatus.error,
           message: 'Message for action1',
           data: { key1: 'value1' }
         },
         {
           action: 'action2',
-          status: 'erro',
+          status: ReportStatus.error,
           message: 'Message for action2'
         },
         {
           action: 'action3',
-          status: 'sucesso'
+          status: ReportStatus.sucess
         }
       ];
 
