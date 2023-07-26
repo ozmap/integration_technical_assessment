@@ -4,7 +4,8 @@ import { WinstonLogger } from './winston-logger';
 
 jest.mock('winston', () => ({
   createLogger: jest.fn(() => ({
-    info: jest.fn()
+    info: jest.fn(),
+    error: jest.fn()
   })),
   transports: {
     Console: jest.fn()
@@ -77,6 +78,21 @@ describe('WinstonLogger', () => {
 
       await sut.info(log);
       expect(mockedLogger.info).toHaveBeenCalledWith(JSON.stringify(log));
+    });
+  });
+
+  describe('error()', () => {
+    test('should call JSON.stringify with correct values', async () => {
+      const { sut } = makeSut();
+      const stringifySpy = jest.spyOn(JSON, 'stringify');
+
+      const log = {
+        message: 'this is a test message',
+        data: { field: 'any_value' }
+      };
+
+      await sut.error(log);
+      expect(stringifySpy).toHaveBeenCalledWith(log);
     });
   });
 });
