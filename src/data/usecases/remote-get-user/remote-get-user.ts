@@ -54,11 +54,32 @@ export class RemoteGetUser implements GetUser {
     }
   }
 
-  async get (): Promise<UserModel> {
+  private async logStart (): Promise<void> {
     await this.handleLogAndReport({
       action: 'Retrieving new user information',
       status: ReportStatus.pending
     });
+  }
+
+  private async logSuccess (response: UserModel): Promise<void> {
+    await this.handleLogAndReport({
+      action: 'User information was successfully retrieved',
+      status: ReportStatus.sucess,
+      data: response
+    });
+  }
+
+  private async logError (error: UnexpectedError): Promise<void> {
+    await this.handleLogAndReport({
+      action: 'An error occurred during user information retrieval',
+      status: ReportStatus.error,
+      data: error,
+      message: error.message
+    });
+  }
+
+  async get (): Promise<UserModel> {
+    await this.logStart();
     const request: HttpRequest = {
       method: 'get',
       url: this.url
@@ -68,21 +89,12 @@ export class RemoteGetUser implements GetUser {
       case HttpStatusCode.ok: {
         const [userData] = httpResponse.body.results;
         const user = this.mapResponseToUserModel(userData);
-        await this.handleLogAndReport({
-          action: 'User information was successfully retrieved',
-          status: ReportStatus.sucess,
-          data: user
-        });
+        await this.logSuccess(user);
         return user;
       }
       default: {
         const error = new UnexpectedError(httpResponse.body.error);
-        await this.handleLogAndReport({
-          action: 'An error occurred during user information retrieval',
-          status: ReportStatus.error,
-          data: error,
-          message: error.message
-        });
+        await this.logError(error);
         throw error;
       }
     }

@@ -26,11 +26,38 @@ export class RemoteAddProperty implements AddProperty {
     }
   }
 
-  async add (data: AddPropertyDTO): Promise<PropertyModel> {
+  private async logStart (previous?: boolean): Promise<void> {
+    let text = '';
+    switch (previous) {
+      case true: text = 'Creating new property for previous user'; break;
+      default: text = 'Creating new property';
+    }
     await this.handleLogAndReport({
-      action: 'Creating new property',
+      action: text,
       status: ReportStatus.pending
     });
+  }
+
+  private async logSuccess (response: PropertyModel): Promise<void> {
+    await this.handleLogAndReport({
+      action: 'Property was successfully created',
+      status: ReportStatus.sucess,
+      data: response
+    });
+  }
+
+  private async logError (error: UnexpectedError): Promise<void> {
+    await this.handleLogAndReport({
+      action: 'An error occurred during property creation',
+      status: ReportStatus.error,
+      data: error,
+      message: error.message
+    });
+  }
+
+  async add (data: AddPropertyDTO): Promise<PropertyModel> {
+    await this.logStart(data.previous);
+
     const request: HttpRequest = {
       method: 'post',
       url: this.url,
@@ -40,25 +67,17 @@ export class RemoteAddProperty implements AddProperty {
       }
     };
     const httpResponse = await this.httpClient.request(request);
+
     switch (httpResponse.statusCode) {
       case HttpStatusCode.created: {
         const { id, box, address, client } = httpResponse.body;
         const response: PropertyModel = { id, box, address, client };
-        await this.handleLogAndReport({
-          action: 'Property was successfully created',
-          status: ReportStatus.sucess,
-          data: response
-        });
+        await this.logSuccess(response);
         return response;
       }
       default: {
         const error = new UnexpectedError(httpResponse.body.message);
-        await this.handleLogAndReport({
-          action: 'An error occurred during property creation',
-          status: ReportStatus.error,
-          data: error,
-          message: error.message
-        });
+        await this.logError(error);
         throw error;
       }
     }

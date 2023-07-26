@@ -50,13 +50,22 @@ describe('RemoteAddProperty', () => {
     await expect(response).rejects.toThrow(new UnexpectedError(httpClientSpy.response.body.message));
   });
 
-  test('should call Logger.info() with correct value', async () => {
+  test('should call Logger.info() with correct value if previous is false', async () => {
     const { sut, loggerSpy } = makeSut();
     const infoSpy = jest.spyOn(loggerSpy, 'info');
 
     await sut.add(mockAddPropertyDTO);
 
     expect(infoSpy).toHaveBeenCalledWith({ message: 'Creating new property' });
+  });
+
+  test('should call Logger.info() with correct value if previous is true', async () => {
+    const { sut, loggerSpy } = makeSut();
+    const infoSpy = jest.spyOn(loggerSpy, 'info');
+
+    await sut.add({ ...mockAddPropertyDTO, previous: true });
+
+    expect(infoSpy).toHaveBeenCalledWith({ message: 'Creating new property for previous user' });
   });
 
   test('should call Reporter.append() with correct values if HttpClient returns 201', async () => {
