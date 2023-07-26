@@ -6,4 +6,8 @@ export class LocalMarkdownReporter {
   constructor () {
     this.entries = [];
   }
+
+  append (data: ReportEntry): void {
+    this.entries.push(data);
+  }
 }
