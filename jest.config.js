@@ -7,6 +7,7 @@ module.exports = {
     testEnvironment: 'jest-environment-node',
     transform: {
       '.+\\.ts': 'ts-jest'
-    }
+    },
+    setupFiles: ["dotenv/config"],
   };
   
