@@ -24,12 +24,15 @@ jest.mock('winston-loki', () => {
 
 type SutTypes = {
   sut: WinstonLogger
+  mockedLogger: any
 };
 
 const makeSut = (): SutTypes => {
   const sut = new WinstonLogger();
+  const mockedLogger = (winston.createLogger as jest.Mock).mock.results[0].value;
   return {
-    sut
+    sut,
+    mockedLogger
   };
 };
 
@@ -68,8 +71,7 @@ describe('WinstonLogger', () => {
     });
 
     test('should call Winston.Logger.info() with correct values', async () => {
-      const { sut } = makeSut();
-      const mockedLogger = (winston.createLogger as jest.Mock).mock.results[0].value;
+      const { sut, mockedLogger } = makeSut();
 
       const log = {
         message: 'this is a test message',
@@ -93,6 +95,18 @@ describe('WinstonLogger', () => {
 
       await sut.error(log);
       expect(stringifySpy).toHaveBeenCalledWith(log);
+    });
+
+    test('should call Winston.Logger.error() with correct values', async () => {
+      const { sut, mockedLogger } = makeSut();
+
+      const log = {
+        message: 'this is a test message',
+        data: { field: 'any_value' }
+      };
+
+      await sut.error(log);
+      expect(mockedLogger.error).toHaveBeenCalledWith(JSON.stringify(log));
     });
   });
 });
