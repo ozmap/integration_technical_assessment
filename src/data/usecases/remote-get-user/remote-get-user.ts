@@ -1,9 +1,9 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
 import { type UserModel } from '../../../domain/models';
 import { type GetUser } from '../../../domain/usecases';
+import { type LogReportHelper } from '../../../util';
 import { type HttpClient } from '../../interfaces';
 import { HttpStatusCode, type HttpRequest } from '../../types';
-import { type LogReportHelper } from '../../util';
 
 export class RemoteGetUser implements GetUser {
   constructor (

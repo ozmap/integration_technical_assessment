@@ -1,7 +1,7 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
+import { LogReportHelper } from '../../../util';
 import { HttpClientSpy, LoggerSpy, ReporterSpy, mockAddPropertyApiResponse, mockAddPropertyDTO, mockPropertyModel } from '../../test';
 import { HttpStatusCode, ReportStatus, type ReportEntry } from '../../types';
-import { LogReportHelper } from '../../util';
 import { RemoteAddProperty } from './remote-add-property';
 
 type SutTypes = {

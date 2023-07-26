@@ -1,10 +1,10 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
 import { type PropertyModel } from '../../../domain/models';
 import { type AddProperty } from '../../../domain/usecases/add-property';
+import { type LogReportHelper } from '../../../util';
 import { type AddPropertyDTO } from '../../dtos/add-property';
 import { type HttpClient } from '../../interfaces';
 import { type HttpRequest, HttpStatusCode } from '../../types';
-import { type LogReportHelper } from '../../util';
 
 export class RemoteAddProperty implements AddProperty {
   constructor (

@@ -1,6 +1,6 @@
-import { type UnexpectedError } from '../../domain/errors/unexpected-error';
-import { type Logger, type Reporter } from '../interfaces';
-import { type ReportEntry, ReportStatus } from '../types';
+import { type Logger, type Reporter } from '../data/interfaces';
+import { type ReportEntry, ReportStatus } from '../data/types';
+import { type UnexpectedError } from '../domain/errors/unexpected-error';
 
 export class LogReportHelper {
   constructor (
@@ -41,5 +41,9 @@ export class LogReportHelper {
       data: error,
       message: error.message
     });
+  }
+
+  async generateReport (): Promise<void> {
+    await this.reporter.generate();
   }
 }

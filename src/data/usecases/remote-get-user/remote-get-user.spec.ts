@@ -1,7 +1,7 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
+import { LogReportHelper } from '../../../util';
 import { HttpClientSpy, LoggerSpy, ReporterSpy, mockRandomUserApiResponse, mockUserModel } from '../../test';
 import { HttpStatusCode, ReportStatus, type ReportEntry } from '../../types';
-import { LogReportHelper } from '../../util';
 import { RemoteGetUser } from './remote-get-user';
 
 type SutTypes = {

@@ -1,10 +1,10 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
 import { type ClientModel } from '../../../domain/models';
 import { type AddClient } from '../../../domain/usecases';
+import { type LogReportHelper } from '../../../util';
 import { type AddClientDTO } from '../../dtos';
 import { type HttpClient } from '../../interfaces';
 import { HttpStatusCode, type HttpRequest } from '../../types';
-import { type LogReportHelper } from '../../util/log-report-helper';
 
 export class RemoteAddClient implements AddClient {
   constructor (
