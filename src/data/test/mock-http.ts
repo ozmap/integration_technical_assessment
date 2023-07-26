@@ -120,3 +120,37 @@ export const mockAddClientApiResponse = {
   updatedAt: '2023-07-26T18:56:16.720Z',
   id: '64c16c503f250c0014f6eab5'
 };
+
+export const mockAddPropertyApiResponse = {
+  observation: '',
+  drop: '64c183da3f250c0014f70341',
+  kind: 'Property',
+  box: '5da61e20493d9c0006665479',
+  address: 'Rua Boa Vista  6328 43468 Botucatu Pernambuco Brazil',
+  client: '64c16c503f250c0014f6eab5',
+  creatorData: {
+    id: '64ac1dc33f250c0014f659a2',
+    name: 'teste_integration',
+    username: 'teste_integration'
+  },
+  project: '5d9f3ff9200141000647f814',
+  pole: '5da61d8e493d9c0006665420',
+  history: {
+    clients: [
+      {
+        id: '64c16c503f250c0014f6eab5',
+        code: 'delores.chambers1',
+        enter_date: '2023-07-26T20:36:41.825Z'
+      }
+    ]
+  },
+  coords: [
+    -48.52575383605957,
+    -27.57847379483711
+  ],
+  createdAt: '2023-07-26T20:36:42.405Z',
+  updatedAt: '2023-07-26T20:36:42.405Z',
+  id: '64c183da3f250c0014f7033f',
+  lng: -48.52575383605957,
+  lat: -27.57847379483711
+};
