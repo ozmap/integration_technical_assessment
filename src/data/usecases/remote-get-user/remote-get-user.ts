@@ -12,7 +12,10 @@ export class RemoteGetUser implements GetUser {
     private readonly logger: Logger,
     private readonly reporter: Reporter
   ) {
+    this.url = url;
     this.httpClient = httpClient;
+    this.logger = logger;
+    this.reporter = reporter;
   }
 
   private mapResponseToUserModel ({ location, name, email }: any): UserModel {
