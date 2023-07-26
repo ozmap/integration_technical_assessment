@@ -54,5 +54,18 @@ describe('WinstonLogger', () => {
       await sut.info(log);
       expect(stringifySpy).toHaveBeenCalledWith(log);
     });
+
+    test('should call Winston.Logger.info() with correct values', async () => {
+      const sut = new WinstonLogger();
+      const mockedLogger = (winston.createLogger as jest.Mock).mock.results[0].value;
+
+      const log = {
+        message: 'this is a test message',
+        data: { field: 'any_value' }
+      };
+
+      await sut.info(log);
+      expect(mockedLogger.info).toHaveBeenCalledWith(JSON.stringify(log));
+    });
   });
 });
