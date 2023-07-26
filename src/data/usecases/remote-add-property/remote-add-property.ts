@@ -1,11 +1,11 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
-import { type ClientModel } from '../../../domain/models';
-import { type AddClient } from '../../../domain/usecases';
-import { type AddClientDTO } from '../../dtos';
+import { type PropertyModel } from '../../../domain/models';
+import { type AddProperty } from '../../../domain/usecases/add-property';
+import { type AddPropertyDTO } from '../../dtos/add-property';
 import { type Reporter, type HttpClient, type Logger } from '../../interfaces';
 import { type ReportEntry, ReportStatus, type HttpRequest, HttpStatusCode } from '../../types';
 
-export class RemoteAddClient implements AddClient {
+export class RemoteAddProperty implements AddProperty {
   constructor (
     private readonly url: string,
     private readonly httpClient: HttpClient,
@@ -26,9 +26,9 @@ export class RemoteAddClient implements AddClient {
     }
   }
 
-  async add (data: AddClientDTO): Promise<ClientModel> {
+  async add (data: AddPropertyDTO): Promise<PropertyModel> {
     await this.handleLogAndReport({
-      action: 'Creating new client',
+      action: 'Creating new property',
       status: ReportStatus.pending
     });
     const request: HttpRequest = {
@@ -42,18 +42,19 @@ export class RemoteAddClient implements AddClient {
     const httpResponse = await this.httpClient.request(request);
     switch (httpResponse.statusCode) {
       case HttpStatusCode.created: {
-        const { id } = httpResponse.body;
+        const { id, box, address, client } = httpResponse.body;
+        const response: PropertyModel = { id, box, address, client };
         await this.handleLogAndReport({
-          action: 'Client was successfully created',
+          action: 'Property was successfully created',
           status: ReportStatus.sucess,
-          data: { id }
+          data: response
         });
-        return { id };
+        return response;
       }
       default: {
         const error = new UnexpectedError(httpResponse.body.message);
         await this.handleLogAndReport({
-          action: 'An error occurred during client creation',
+          action: 'An error occurred during property creation',
           status: ReportStatus.error,
           data: error,
           message: error.message

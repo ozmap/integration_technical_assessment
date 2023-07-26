@@ -1,4 +1,4 @@
-import { type Reporter } from '../interfaces/reporter';
+import { type Reporter } from '../interfaces';
 import { type ReportEntry } from '../types';
 
 export class ReporterSpy implements Reporter {

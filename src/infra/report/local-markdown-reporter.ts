@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'fs/promises';
 import path from 'path';
 import { type ReportEntry } from '../../data/types';
-import { type Reporter } from '../../data/interfaces/reporter';
+import { type Reporter } from '../../data/interfaces';
 
 export class LocalMarkdownReporter implements Reporter {
   private entries: ReportEntry[];
