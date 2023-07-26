@@ -8,8 +8,7 @@ export class HttpClientSpy<R = any> implements HttpClient<R> {
   public headers?: any;
   public data?: any;
   public response?: HttpResponse = {
-    statusCode: HttpStatusCode.ok,
-    body: mockRandomUserApiResponse()
+    statusCode: HttpStatusCode.ok
   };
 
   async request (request: HttpRequest): Promise<HttpResponse> {
@@ -29,7 +28,7 @@ export const mockHttpRequest = (): HttpRequest => ({
   data: { field: 'any_data_value' }
 });
 
-export const mockRandomUserApiResponse = (): any => ({
+export const mockRandomUserApiResponse = {
   results: [
     {
       gender: 'female',
@@ -94,4 +93,4 @@ export const mockRandomUserApiResponse = (): any => ({
     page: 1,
     version: '1.4'
   }
-});
+};

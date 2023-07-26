@@ -1,5 +1,5 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
-import { HttpClientSpy, LoggerSpy, ReporterSpy, mockUserModel } from '../../test';
+import { HttpClientSpy, LoggerSpy, ReporterSpy, mockRandomUserApiResponse, mockUserModel } from '../../test';
 import { HttpStatusCode, ReportStatus, type ReportEntry } from '../../types';
 import { RemoteGetUser } from './remote-get-user';
 
@@ -12,6 +12,7 @@ type SutTypes = {
 
 const makeSut = (url: string = 'any_url'): SutTypes => {
   const httpClientSpy = new HttpClientSpy();
+  httpClientSpy.response.body = mockRandomUserApiResponse;
   const loggerSpy = new LoggerSpy();
   const reporterSpy = new ReporterSpy();
   const sut = new RemoteGetUser(url, httpClientSpy, loggerSpy, reporterSpy);
