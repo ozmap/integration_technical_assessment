@@ -40,4 +40,19 @@ describe('WinstonLogger', () => {
       format: expect.anything()
     });
   });
+
+  describe('info()', () => {
+    test('should call JSON.stringify with correct values', async () => {
+      const sut = new WinstonLogger();
+      const stringifySpy = jest.spyOn(JSON, 'stringify');
+
+      const log = {
+        message: 'this is a test message',
+        data: { field: 'any_value' }
+      };
+
+      await sut.info(log);
+      expect(stringifySpy).toHaveBeenCalledWith(log);
+    });
+  });
 });
