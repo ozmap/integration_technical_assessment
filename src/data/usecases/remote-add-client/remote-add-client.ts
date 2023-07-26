@@ -2,8 +2,7 @@ import { UnexpectedError } from '../../../domain/errors/unexpected-error';
 import { type ClientModel } from '../../../domain/models';
 import { type AddClient } from '../../../domain/usecases';
 import { type AddClientDTO } from '../../dtos';
-import { type HttpClient, type Logger } from '../../interfaces';
-import { type Reporter } from '../../interfaces/reporter';
+import { type Reporter, type HttpClient, type Logger } from '../../interfaces';
 import { type ReportEntry, ReportStatus, type HttpRequest, HttpStatusCode } from '../../types';
 
 export class RemoteAddClient implements AddClient {
