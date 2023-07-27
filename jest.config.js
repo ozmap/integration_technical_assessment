@@ -4,6 +4,7 @@ module.exports = {
       '<rootDir>/src/**/*.ts',
       '!<rootDir>/src/**/index.ts',
       '!<rootDir>/src/**/*-error.ts',
+      '!<rootDir>/src/main/**/*.ts',
     ],
     coverageDirectory: 'coverage',
     testEnvironment: 'jest-environment-node',

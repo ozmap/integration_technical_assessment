@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Technical assessment for the position of junior developer in the OZmap integration sector.",
   "scripts": {
-    "dev": "ts-node-dev --respawn src/index.ts",
+    "dev": "ts-node-dev --respawn src/main/app.ts",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:verbose": "jest --passWithNoTests --runInBand",
     "test:vwatch": "npm run test:verbose -- --watch",
