@@ -1,4 +1,4 @@
-import { LoggerSpy, ReporterSpy } from '../data/test';
+import { LoggerSpy, ReporterSpy } from '../../data/test';
 import { LogReportHelper } from './log-report-helper';
 
 type SutTypes = {

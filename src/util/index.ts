@@ -1,1 +1,1 @@
-export * from './log-report-helper';
+export * from './log-report-helper/log-report-helper';

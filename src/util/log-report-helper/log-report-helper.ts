@@ -1,6 +1,6 @@
-import { type Logger, type Reporter } from '../data/interfaces';
-import { type ReportEntry, ReportStatus } from '../data/types';
-import { type UnexpectedError } from '../domain/errors/unexpected-error';
+import { type Logger, type Reporter } from '../../data/interfaces';
+import { type ReportEntry, ReportStatus } from '../../data/types';
+import { type UnexpectedError } from '../../domain/errors/unexpected-error';
 
 export class LogReportHelper {
   constructor (
