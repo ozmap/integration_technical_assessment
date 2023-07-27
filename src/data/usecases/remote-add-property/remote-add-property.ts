@@ -43,8 +43,13 @@ export class RemoteAddProperty implements AddProperty {
         return response;
       }
       default: {
-        const error = new UnexpectedError(httpResponse.body.message);
-        await this.logReportHelper.logError(addPropertyLogError(), error);
+        const error = new UnexpectedError();
+        await this.logReportHelper.logError(addPropertyLogError(), {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+          data: httpResponse.body
+        });
         throw error;
       }
     }

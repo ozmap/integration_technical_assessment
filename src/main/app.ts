@@ -8,22 +8,26 @@ const main = async (): Promise<void> => {
 
   const { remoteGetUser, remoteAddClient, remoteAddProperty, logReportHelper } = makeApp();
   while (true) {
-    if (previousProperty) {
-      await remoteAddProperty.add({ ...previousProperty, previous: true });
+    try {
+      if (previousProperty) {
+        await remoteAddProperty.add({ ...previousProperty, previous: true });
+      }
+      const { code, name, observation, address } = await remoteGetUser.get();
+      const { id } = await remoteAddClient.add({ code, name, observation });
+      const propertyData: AddPropertyDTO = {
+        address,
+        client: id,
+        box: PROPERTY_BOX,
+        auto_connect: AUTO_CONNECT,
+        force: FORCE
+      };
+      await remoteAddProperty.add(propertyData);
+      previousProperty = propertyData;
+      await logReportHelper.generateReport();
+      await handleRerun();
+    } catch {
+      await logReportHelper.generateReport();
     }
-    const { code, name, observation, address } = await remoteGetUser.get();
-    const { id } = await remoteAddClient.add({ code, name, observation });
-    const propertyData: AddPropertyDTO = {
-      address,
-      client: id,
-      box: PROPERTY_BOX,
-      auto_connect: AUTO_CONNECT,
-      force: FORCE
-    };
-    await remoteAddProperty.add(propertyData);
-    previousProperty = propertyData;
-    await logReportHelper.generateReport();
-    await handleRerun();
   }
 };
 

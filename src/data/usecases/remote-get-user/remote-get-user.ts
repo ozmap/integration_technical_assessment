@@ -61,8 +61,13 @@ export class RemoteGetUser implements GetUser {
         return user;
       }
       default: {
-        const error = new UnexpectedError(httpResponse.body.error);
-        await this.logReportHelper.logError(getUserLogError(), error);
+        const error = new UnexpectedError();
+        await this.logReportHelper.logError(getUserLogError(), {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+          data: httpResponse.body
+        });
         throw error;
       }
     }

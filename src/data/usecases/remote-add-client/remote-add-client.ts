@@ -35,8 +35,13 @@ export class RemoteAddClient implements AddClient {
         return { id };
       }
       default: {
-        const error = new UnexpectedError(httpResponse.body.message);
-        await this.logReportHelper.logError(addClientLogError(), error);
+        const error = new UnexpectedError();
+        await this.logReportHelper.logError(addClientLogError(), {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+          data: httpResponse.body
+        });
         throw error;
       }
     }

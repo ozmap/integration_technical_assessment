@@ -42,14 +42,15 @@ describe('RemoteAddProperty', () => {
 
   test('should throw UnexpectedError if HttpClient returns an http error response', async () => {
     const { sut, httpClientSpy } = makeSut();
+    const errorBody = { message: 'Not Found', stack: 'any_string' };
     httpClientSpy.response = {
       statusCode: HttpStatusCode.serverError,
-      body: { message: 'Uh oh, something has gone wrong.' }
+      body: errorBody
     };
 
     const response = sut.add(mockAddPropertyDTO);
 
-    await expect(response).rejects.toThrow(new UnexpectedError(httpClientSpy.response.body.message));
+    await expect(response).rejects.toThrow(new UnexpectedError());
   });
 
   test('should call Logger.info() with correct value if previous is false', async () => {
@@ -87,9 +88,10 @@ describe('RemoteAddProperty', () => {
 
   test('should call Reporter.append() with correct values if HttpClient returns an http error response', async () => {
     const { sut, httpClientSpy, reporterSpy } = makeSut();
+    const errorBody = { message: 'Not Found', stack: 'any_string' };
     httpClientSpy.response = {
       statusCode: HttpStatusCode.serverError,
-      body: { message: 'Uh oh, something has gone wrong.' }
+      body: errorBody
     };
     const appendSpy = jest.spyOn(reporterSpy, 'append');
 
@@ -101,11 +103,19 @@ describe('RemoteAddProperty', () => {
       error = err;
     }
 
+    const { name, message, stack } = error;
+
     const reportEntry: ReportEntry = {
       action: addPropertyLogError(),
       status: ReportStatus.error,
-      data: error,
-      message: error.message
+      message: error.message,
+      data: {
+        [name]: {
+          data: errorBody,
+          message,
+          stack
+        }
+      }
     };
 
     expect(appendSpy).toHaveBeenCalledWith(reportEntry);
@@ -113,20 +123,32 @@ describe('RemoteAddProperty', () => {
 
   test('should call Logger.error() if HttpClient returns an http error response', async () => {
     const { sut, httpClientSpy, loggerSpy } = makeSut();
+    const errorBody = { message: 'Not Found', stack: 'any_string' };
     httpClientSpy.response = {
       statusCode: HttpStatusCode.serverError,
-      body: { message: 'Uh oh, something has gone wrong.' }
+      body: errorBody
     };
+
+    let error: Error;
 
     try {
       await sut.add(mockAddPropertyDTO);
-    } catch (error) {
+    } catch (err) {
+      error = err;
     }
+
+    const { name, message, stack } = error;
 
     expect(loggerSpy.method).toBe('error');
     expect(loggerSpy.log).toEqual({
       message: addPropertyLogError(),
-      error: new UnexpectedError(httpClientSpy.response.body.message)
+      error: {
+        [name]: {
+          message,
+          stack,
+          data: errorBody
+        }
+      }
     });
   });
 

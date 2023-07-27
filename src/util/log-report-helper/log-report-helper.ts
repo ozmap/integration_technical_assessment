@@ -1,6 +1,5 @@
 import { type Logger, type Reporter } from '../../data/interfaces';
-import { type ReportEntry, ReportStatus } from '../../data/types';
-import { type UnexpectedError } from '../../domain/errors/unexpected-error';
+import { type ReportEntry, ReportStatus, type ErrorLog } from '../../data/types';
 
 export class LogReportHelper {
   constructor (
@@ -34,12 +33,12 @@ export class LogReportHelper {
     });
   }
 
-  async logError (action: string, error: UnexpectedError): Promise<void> {
+  async logError (action: string, { name, message, stack, data }: ErrorLog): Promise<void> {
     await this.handleLogAndReport({
       action,
       status: ReportStatus.error,
-      data: error,
-      message: error.message
+      data: { [name]: { message, stack, data } },
+      message
     });
   }
 

@@ -39,14 +39,15 @@ describe('RemoteGetUser', () => {
 
   test('should throw UnexpectedError if HttpClient returns an http error response', async () => {
     const { sut, httpClientSpy } = makeSut();
+    const errorBody = { message: 'Not Found', stack: 'any_string' };
     httpClientSpy.response = {
       statusCode: HttpStatusCode.serverError,
-      body: { error: 'Uh oh, something has gone wrong.' }
+      body: errorBody
     };
 
     const response = sut.get();
 
-    await expect(response).rejects.toThrow(new UnexpectedError(httpClientSpy.response.body.error));
+    await expect(response).rejects.toThrow(new UnexpectedError());
   });
 
   test('should call Logger.info() with correct value', async () => {
@@ -75,9 +76,10 @@ describe('RemoteGetUser', () => {
 
   test('should call Reporter.append() with correct values if HttpClient returns an http error response', async () => {
     const { sut, httpClientSpy, reporterSpy } = makeSut();
+    const errorBody = { message: 'Not Found', stack: 'any_string' };
     httpClientSpy.response = {
       statusCode: HttpStatusCode.serverError,
-      body: { error: 'Uh oh, something has gone wrong.' }
+      body: errorBody
     };
     const appendSpy = jest.spyOn(reporterSpy, 'append');
 
@@ -89,11 +91,19 @@ describe('RemoteGetUser', () => {
       error = err;
     }
 
+    const { name, message, stack } = error;
+
     const reportEntry: ReportEntry = {
       action: getUserLogError(),
       status: ReportStatus.error,
-      data: error,
-      message: error.message
+      message: error.message,
+      data: {
+        [name]: {
+          data: errorBody,
+          message,
+          stack
+        }
+      }
     };
 
     expect(appendSpy).toHaveBeenCalledWith(reportEntry);
@@ -101,20 +111,32 @@ describe('RemoteGetUser', () => {
 
   test('should call Logger.error() if HttpClient returns an http error response', async () => {
     const { sut, httpClientSpy, loggerSpy } = makeSut();
+    const errorBody = { message: 'Not Found', stack: 'any_string' };
     httpClientSpy.response = {
       statusCode: HttpStatusCode.serverError,
-      body: { error: 'Uh oh, something has gone wrong.' }
+      body: errorBody
     };
+
+    let error: Error;
 
     try {
       await sut.get();
-    } catch (error) {
+    } catch (err) {
+      error = err;
     }
+
+    const { name, message, stack } = error;
 
     expect(loggerSpy.method).toBe('error');
     expect(loggerSpy.log).toEqual({
       message: getUserLogError(),
-      error: new UnexpectedError(httpClientSpy.response.body.error)
+      error: {
+        [name]: {
+          message,
+          stack,
+          data: errorBody
+        }
+      }
     });
   });
 

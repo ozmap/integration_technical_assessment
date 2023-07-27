@@ -42,19 +42,22 @@ describe('AxiosHttpClient', () => {
 
   test('should return correct error', async () => {
     const { sut, mockedAxios } = makeSut();
-    const errorMessage = 'An error occurred';
     mockedAxios.request.mockRejectedValueOnce({
       response: {
         status: 500,
-        data: { error: errorMessage }
-      }
+        statusText: 'Not found'
+      },
+      stack: 'any_string'
     });
 
     const response = await sut.request(mockHttpRequest());
 
     expect(response).toEqual({
       statusCode: 500,
-      body: { error: errorMessage }
+      body: {
+        message: 'Not found',
+        stack: 'any_string'
+      }
     });
   });
 });
