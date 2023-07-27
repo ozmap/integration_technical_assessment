@@ -1,5 +1,5 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
-import { LogReportHelper } from '../../../util';
+import { LogReportHelper, addNewClientPropertyLogStart, addPreviousClientPropertyLogStart, addPropertyLogError, addPropertyLogSuccess } from '../../../util';
 import { HttpClientSpy, LoggerSpy, ReporterSpy, mockAddPropertyApiResponse, mockAddPropertyDTO, mockPropertyModel } from '../../test';
 import { HttpStatusCode, ReportStatus, type ReportEntry } from '../../types';
 import { RemoteAddProperty } from './remote-add-property';
@@ -58,7 +58,7 @@ describe('RemoteAddProperty', () => {
 
     await sut.add(mockAddPropertyDTO);
 
-    expect(infoSpy).toHaveBeenCalledWith({ message: 'Creating new property' });
+    expect(infoSpy).toHaveBeenCalledWith({ message: addNewClientPropertyLogStart() });
   });
 
   test('should call Logger.info() with correct value if previous is true', async () => {
@@ -67,7 +67,7 @@ describe('RemoteAddProperty', () => {
 
     await sut.add({ ...mockAddPropertyDTO, previous: true });
 
-    expect(infoSpy).toHaveBeenCalledWith({ message: 'Creating new property for previous user' });
+    expect(infoSpy).toHaveBeenCalledWith({ message: addPreviousClientPropertyLogStart() });
   });
 
   test('should call Reporter.append() with correct values if HttpClient returns 201', async () => {
@@ -75,7 +75,7 @@ describe('RemoteAddProperty', () => {
     const appendSpy = jest.spyOn(reporterSpy, 'append');
 
     const reportEntry: ReportEntry = {
-      action: 'Property was successfully created',
+      action: addPropertyLogSuccess(),
       status: ReportStatus.sucess,
       data: mockPropertyModel
     };
@@ -102,7 +102,7 @@ describe('RemoteAddProperty', () => {
     }
 
     const reportEntry: ReportEntry = {
-      action: 'An error occurred during property creation',
+      action: addPropertyLogError(),
       status: ReportStatus.error,
       data: error,
       message: error.message
@@ -125,7 +125,7 @@ describe('RemoteAddProperty', () => {
 
     expect(loggerSpy.method).toBe('error');
     expect(loggerSpy.log).toEqual({
-      message: 'An error occurred during property creation',
+      message: addPropertyLogError(),
       error: new UnexpectedError(httpClientSpy.response.body.message)
     });
   });
@@ -137,7 +137,7 @@ describe('RemoteAddProperty', () => {
     await sut.add(mockAddPropertyDTO);
 
     expect(infoSpy).toHaveBeenCalledWith({
-      message: 'Property was successfully created',
+      message: addPropertyLogSuccess(),
       data: mockPropertyModel
     });
   });

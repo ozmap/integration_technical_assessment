@@ -1,5 +1,5 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
-import { LogReportHelper } from '../../../util';
+import { LogReportHelper, addClientLogError, addClientLogStart, addClientLogSuccess } from '../../../util';
 import { HttpClientSpy, LoggerSpy, ReporterSpy, mockAddClientApiResponse, mockAddClientDTO, mockClientModel } from '../../test';
 import { HttpStatusCode, ReportStatus, type ReportEntry } from '../../types';
 import { RemoteAddClient } from './remote-add-client';
@@ -58,7 +58,7 @@ describe('RemoteAddClient', () => {
 
     await sut.add(mockAddClientDTO);
 
-    expect(infoSpy).toHaveBeenCalledWith({ message: 'Creating new client' });
+    expect(infoSpy).toHaveBeenCalledWith({ message: addClientLogStart() });
   });
 
   test('should call Reporter.append() with correct values if HttpClient returns 201', async () => {
@@ -66,7 +66,7 @@ describe('RemoteAddClient', () => {
     const appendSpy = jest.spyOn(reporterSpy, 'append');
 
     const reportEntry: ReportEntry = {
-      action: 'Client was successfully created',
+      action: addClientLogSuccess(),
       status: ReportStatus.sucess,
       data: mockClientModel
     };
@@ -93,7 +93,7 @@ describe('RemoteAddClient', () => {
     }
 
     const reportEntry: ReportEntry = {
-      action: 'An error occurred during client creation',
+      action: addClientLogError(),
       status: ReportStatus.error,
       data: error,
       message: error.message
@@ -116,7 +116,7 @@ describe('RemoteAddClient', () => {
 
     expect(loggerSpy.method).toBe('error');
     expect(loggerSpy.log).toEqual({
-      message: 'An error occurred during client creation',
+      message: addClientLogError(),
       error: new UnexpectedError(httpClientSpy.response.body.message)
     });
   });
@@ -128,7 +128,7 @@ describe('RemoteAddClient', () => {
     await sut.add(mockAddClientDTO);
 
     expect(infoSpy).toHaveBeenCalledWith({
-      message: 'Client was successfully created',
+      message: addClientLogSuccess(),
       data: mockClientModel
     });
   });

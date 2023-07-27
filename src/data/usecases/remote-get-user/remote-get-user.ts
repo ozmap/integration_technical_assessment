@@ -1,7 +1,7 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
 import { type UserModel } from '../../../domain/models';
 import { type GetUser } from '../../../domain/usecases';
-import { type LogReportHelper } from '../../../util';
+import { getUserLogError, getUserLogStart, getUserLogSuccess, type LogReportHelper } from '../../../util';
 import { type HttpClient } from '../../interfaces';
 import { HttpStatusCode, type HttpRequest } from '../../types';
 
@@ -47,7 +47,7 @@ export class RemoteGetUser implements GetUser {
   };
 
   async get (): Promise<UserModel> {
-    await this.logReportHelper.logStart('Retrieving new user information');
+    await this.logReportHelper.logStart(getUserLogStart());
     const request: HttpRequest = {
       method: 'get',
       url: this.url
@@ -57,12 +57,12 @@ export class RemoteGetUser implements GetUser {
       case HttpStatusCode.ok: {
         const [userData] = httpResponse.body.results;
         const user = this.mapResponseToUserModel(userData);
-        await this.logReportHelper.logSuccess('User information was successfully retrieved', user);
+        await this.logReportHelper.logSuccess(getUserLogSuccess(), user);
         return user;
       }
       default: {
         const error = new UnexpectedError(httpResponse.body.error);
-        await this.logReportHelper.logError('An error occurred during user information retrieval', error);
+        await this.logReportHelper.logError(getUserLogError(), error);
         throw error;
       }
     }

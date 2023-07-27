@@ -1,14 +1,12 @@
 export enum ReportStatus {
-  sucess = 'sucesso',
-  error = 'erro',
-  pending = 'pendente'
+  sucess = 'success',
+  error = 'error',
+  pending = 'pending'
 }
-
-type ReportEntryStatus = 'sucesso' | 'erro' | 'pendente';
 
 export type ReportEntry = {
   action: string
-  status: ReportEntryStatus
+  status: ReportStatus
   message?: string
   data?: any
 };

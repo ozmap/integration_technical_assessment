@@ -1,4 +1,5 @@
 import { ReportStatus, type ReportEntry } from '../../data/types';
+import { reportFileName, reportFolderName, reportTitle } from '../../util';
 import { LocalMarkdownReporter } from './local-markdown-reporter';
 
 import fs from 'fs/promises';
@@ -48,29 +49,30 @@ describe('LocalMarkdownReporter', () => {
     });
   });
   describe('generate()', () => {
-    it('should format the current date and time correctly', () => {
+    test('should format the current date and time correctly', () => {
       const { sut } = makeSut();
       const formattedDate = ((sut as any).getCurrentDateTime() as string);
 
       expect(formattedDate).toMatch(mockDateTime);
     });
 
-    it('should generate a valid file name', () => {
+    test('should generate a valid file name', () => {
       const { sut } = makeSut();
-      const formattedDate = ((sut as any).getFileName(mockDateTime) as string);
+      const fileName = ((sut as any).getFileName(mockDateTime) as string);
 
-      expect(formattedDate).toBe(`relatorio_${mockDateTime}.md`);
+      expect(fileName).toBe(reportFileName(mockDateTime));
     });
 
-    it('should add the title with the correct datetime', () => {
+    test('should add the title with the correct datetime', () => {
       const { sut } = makeSut();
       ((sut as any).addTitle(mockDateTime));
-      const reportTitle = ((sut as any).content as string);
+      const title = ((sut as any).content as string);
+      const expectedReportTitle = `# ${reportTitle(mockDateTime)}\n`;
 
-      expect(reportTitle).toBe(`# Relatório de Execução - Data: ${mockDateTime}\n\n`);
+      expect(title).toBe(expectedReportTitle);
     });
 
-    it('should add content correctly', () => {
+    test('should add content correctly', () => {
       const { sut } = makeSut();
 
       const entries: ReportEntry[] = [
@@ -96,17 +98,17 @@ describe('LocalMarkdownReporter', () => {
       const content = ((sut as any).content as string);
 
       const expectedContent =
-      '1. Ação: action1\n   ' +
-        '- Status: erro\n   ' +
-        '- Mensagem de Erro: Message for action1\n' +
-          '\n   - Dados:\n\n      ```json\n' +
+      '\n1. Action: action1\n   ' +
+        '- Status: error\n   ' +
+        '- Error Message: Message for action1\n' +
+          '   - Data:\n\n      ```json\n' +
           '      {\n        "key1": "value1"\n      }\n' +
-          '      ```\n\n' +
-      '2. Ação: action2\n   ' +
-        '- Status: erro\n   ' +
-        '- Mensagem de Erro: Message for action2\n' +
-      '3. Ação: action3\n   ' +
-      '- Status: sucesso\n';
+          '      ```\n' +
+      '\n2. Action: action2\n   ' +
+        '- Status: error\n   ' +
+        '- Error Message: Message for action2\n' +
+      '\n3. Action: action3\n   ' +
+      '- Status: success\n';
 
       expect(content).toBe(expectedContent);
     });
@@ -125,9 +127,9 @@ describe('LocalMarkdownReporter', () => {
       const writeFileSpy = jest.spyOn(fs, 'writeFile');
 
       await sut.generate();
-      const reportContent = `# Relatório de Execução - Data: ${mockDateTime}\n\n`;
+      const expectedReportContent = `# ${reportTitle(mockDateTime)}\n`;
 
-      expect(writeFileSpy).toHaveBeenCalledWith(`reports/relatorio_${mockDateTime}.md`, reportContent);
+      expect(writeFileSpy).toHaveBeenCalledWith(`${reportFolderName()}/${reportFileName(mockDateTime)}`, expectedReportContent);
     });
 
     test('should clear entries and content when report is saved', async () => {

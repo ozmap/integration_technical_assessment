@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'fs/promises';
 import path from 'path';
 import { type ReportEntry } from '../../data/types';
 import { type Reporter } from '../../data/interfaces';
+import { reportAction, reportData, reportErrorMessage, reportFileName, reportFolderName, reportStatus, reportTitle } from '../../util';
 
 export class LocalMarkdownReporter implements Reporter {
   private entries: ReportEntry[];
@@ -27,40 +28,41 @@ export class LocalMarkdownReporter implements Reporter {
   }
 
   private getFileName (datetime: string): string {
-    return `relatorio_${datetime}.md`;
+    return reportFileName(datetime);
   }
 
   private addTitle (datetime: string): void {
-    this.content += `# Relatório de Execução - Data: ${datetime}\n\n`;
+    this.content += `# ${reportTitle(datetime)}\n`;
   }
 
   private addContent (): void {
     this.entries.forEach((entry, index) => {
-      this.content += `${index + 1}. Ação: ${entry.action}\n   - Status: ${entry.status}\n`;
+      this.content += `\n${index + 1}. `;
+      this.content += `${reportAction(entry.action)}\n   `;
+      this.content += `- ${reportStatus(entry.status)}\n`;
 
       if (entry.message) {
-        this.content += `   - Mensagem de Erro: ${entry.message}\n`;
+        this.content += `   - ${reportErrorMessage(entry.message)}\n`;
       }
 
       if (entry.data) {
         const formattedJSON = `${JSON.stringify(entry.data, null, 8)}`;
         const data = `${formattedJSON.slice(0, formattedJSON.length - 1)}      }\n`;
-        this.content += '\n   - Dados:\n';
+        this.content += `   - ${reportData()}\n`;
         this.content += '\n      ```json\n';
         this.content += `      ${data}`;
-        this.content += '      ```\n\n';
+        this.content += '      ```\n';
       }
     });
   }
 
   private async getFolder (): Promise<string> {
-    const folderName = 'reports';
     try {
-      await mkdir(folderName);
+      await mkdir(reportFolderName());
     } catch {
     }
 
-    return folderName;
+    return reportFolderName();
   }
 
   private async saveReport (datetime: string): Promise<void> {

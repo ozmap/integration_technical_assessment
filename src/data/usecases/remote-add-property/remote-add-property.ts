@@ -1,7 +1,7 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
 import { type PropertyModel } from '../../../domain/models';
 import { type AddProperty } from '../../../domain/usecases/add-property';
-import { type LogReportHelper } from '../../../util';
+import { addNewClientPropertyLogStart, addPreviousClientPropertyLogStart, addPropertyLogError, addPropertyLogSuccess, type LogReportHelper } from '../../../util';
 import { type AddPropertyDTO } from '../../dtos/add-property';
 import { type HttpClient } from '../../interfaces';
 import { type HttpRequest, HttpStatusCode } from '../../types';
@@ -20,8 +20,8 @@ export class RemoteAddProperty implements AddProperty {
   async add (data: AddPropertyDTO): Promise<PropertyModel> {
     let text = '';
     switch (data.previous) {
-      case true: text = 'Creating new property for previous user'; break;
-      default: text = 'Creating new property';
+      case true: text = addPreviousClientPropertyLogStart(); break;
+      default: text = addNewClientPropertyLogStart();
     }
     await this.logReportHelper.logStart(text);
 
@@ -39,12 +39,12 @@ export class RemoteAddProperty implements AddProperty {
       case HttpStatusCode.created: {
         const { id, box, address, client } = httpResponse.body;
         const response: PropertyModel = { id, box, address, client };
-        await this.logReportHelper.logSuccess('Property was successfully created', response);
+        await this.logReportHelper.logSuccess(addPropertyLogSuccess(), response);
         return response;
       }
       default: {
         const error = new UnexpectedError(httpResponse.body.message);
-        await this.logReportHelper.logError('An error occurred during property creation', error);
+        await this.logReportHelper.logError(addPropertyLogError(), error);
         throw error;
       }
     }

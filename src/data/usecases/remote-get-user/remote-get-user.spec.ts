@@ -1,5 +1,5 @@
 import { UnexpectedError } from '../../../domain/errors/unexpected-error';
-import { LogReportHelper } from '../../../util';
+import { LogReportHelper, getUserLogError, getUserLogStart, getUserLogSuccess } from '../../../util';
 import { HttpClientSpy, LoggerSpy, ReporterSpy, mockRandomUserApiResponse, mockUserModel } from '../../test';
 import { HttpStatusCode, ReportStatus, type ReportEntry } from '../../types';
 import { RemoteGetUser } from './remote-get-user';
@@ -55,7 +55,7 @@ describe('RemoteGetUser', () => {
 
     await sut.get();
 
-    expect(infoSpy).toHaveBeenCalledWith({ message: 'Retrieving new user information' });
+    expect(infoSpy).toHaveBeenCalledWith({ message: getUserLogStart() });
   });
 
   test('should call Reporter.append() with correct values if HttpClient returns 200', async () => {
@@ -63,7 +63,7 @@ describe('RemoteGetUser', () => {
     const appendSpy = jest.spyOn(reporterSpy, 'append');
 
     const reportEntry: ReportEntry = {
-      action: 'User information was successfully retrieved',
+      action: getUserLogSuccess(),
       status: ReportStatus.sucess,
       data: mockUserModel
     };
@@ -90,7 +90,7 @@ describe('RemoteGetUser', () => {
     }
 
     const reportEntry: ReportEntry = {
-      action: 'An error occurred during user information retrieval',
+      action: getUserLogError(),
       status: ReportStatus.error,
       data: error,
       message: error.message
@@ -113,7 +113,7 @@ describe('RemoteGetUser', () => {
 
     expect(loggerSpy.method).toBe('error');
     expect(loggerSpy.log).toEqual({
-      message: 'An error occurred during user information retrieval',
+      message: getUserLogError(),
       error: new UnexpectedError(httpClientSpy.response.body.error)
     });
   });
@@ -125,7 +125,7 @@ describe('RemoteGetUser', () => {
     await sut.get();
 
     expect(infoSpy).toHaveBeenCalledWith({
-      message: 'User information was successfully retrieved',
+      message: getUserLogSuccess(),
       data: mockUserModel
     });
   });
