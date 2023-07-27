@@ -8,5 +8,7 @@ export class ReporterSpy implements Reporter {
     this.data = data;
   }
 
-  generate: () => Promise<void>;
+  async generate (): Promise<void> {
+    return null;
+  }
 }
