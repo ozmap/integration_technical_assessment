@@ -4,6 +4,24 @@ networks:
   loki:
 
 services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8080:8080" 
+    restart: always
+    volumes:
+      - ./reports/:/usr/app/reports/
+    environment:
+      - TZ=America/Sao_Paulo
+      - LOGGER_URL=http://loki:3100
+    depends_on:
+      - loki
+      - promtail
+      - grafana
+    networks:
+      - loki
+
   loki:
     image: grafana/loki:latest
     ports:

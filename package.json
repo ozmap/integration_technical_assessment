@@ -12,6 +12,7 @@
     "test:coverage": "npm test -- --coverage",
     "build": "rm -rf dist/ && tsc",
     "prepare": "husky install",
+    "docker:build": "docker compose up -d --build",
     "up": "docker compose up -d",
     "down": "docker compose down"
   },
