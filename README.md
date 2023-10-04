@@ -38,15 +38,6 @@ Além disso, temos alguns requisitos adicionais:
 Importante: A aplicação deve ser eficiente e capaz de lidar com grandes volumes de dados, considerando que a máquina onde está a base OZmap pode ter recursos limitados. Além disso, aproveite a capacidade do Node.js para executar múltiplas threads nativamente, sem a necessidade de módulos externos, para otimizar o uso dos recursos do sistema.
 
 Boa sorte e divirta-se desenvolvendo a solução!
-
-
- A avaliação envolve a execução de algumas tarefas desempenhadas no setor de integração da empresa, com o objetivo de avaliar a solução desenvolvida pelo candidato para o problema proposto. 
- A tarefa consiste no desenvolvimento de uma aplicação backend em Node.js ou Typescript que deverá ser executada a cada X minutos. Essa aplicação realizará consultas em uma API pública e utilizará os dados obtidos para criar elementos na base OZmap por meio de uma API. Além disso, são requisitos adicionais:
- * Tempo de intervalo entre cada execução da aplicação definido por uma variável de ambiente.
- * Implementação de um logger para registrar as ações realizadas pela aplicação.
- * Criação de um endpoint para visualização dos logs da aplicação por meio do navegador.
- * A cada execução da aplicação, deverá ser exportado um relatório que será incrementado com informações sobre as ações realizadas, incluindo aquelas que apresentarem erro.
- * Elaboração de uma documentação para a aplicação.
  
 <a id="instrucoes"></a>
 ## 2. Instruções
