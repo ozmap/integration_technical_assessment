@@ -13,6 +13,33 @@
 <a id="tarefa"></a>
 ## 1. Tarefa
 
+Olá, candidato!
+
+Bem-vindo ao nosso teste técnico para desenvolvedor pleno. Este teste é uma oportunidade para você demonstrar suas habilidades no campo de manipulação de dados. O objetivo é avaliar a solução que você desenvolverá para um problema específico.
+
+A tarefa consiste em criar uma aplicação backend em Typescript que realizará as seguintes ações:
+
+1. Ler um arquivo XLS fornecido.
+2. Salvar os dados lidos em um banco de dados MongoDB.
+3. Criar diversos elementos via API em uma base OZmap com base nos dados salvos no banco.
+
+Além disso, temos alguns requisitos adicionais:
+
+* A aplicação deve ser executada em um contêiner Docker.
+* Deve haver uma conexão com o MongoDB via contêiner.
+* É necessário implementar testes automatizados.
+* Antes de criar elementos na base OZmap, os dados lidos devem ser validados.
+* A aplicação deve ter um sistema de tratamento de erros para lidar com possíveis falhas nas APIs externas ou na lógica da aplicação.
+* Deve ser utilizado um sistema de logs para a aplicação, e como diferencial, disponibilizar uma interface externa para consulta desses logs.
+* Você deve incluir um arquivo read.me com instruções sobre como executar a aplicação e informações de configuração.
+* A aplicação deve ser capaz de exportar relatórios de execução no formato CSV.
+* É necessário realizar o deploy da aplicação.
+
+Importante: A aplicação deve ser eficiente e capaz de lidar com grandes volumes de dados, considerando que a máquina onde está a base OZmap pode ter recursos limitados. Além disso, aproveite a capacidade do Node.js para executar múltiplas threads nativamente, sem a necessidade de módulos externos, para otimizar o uso dos recursos do sistema.
+
+Boa sorte e divirta-se desenvolvendo a solução!
+
+
  A avaliação envolve a execução de algumas tarefas desempenhadas no setor de integração da empresa, com o objetivo de avaliar a solução desenvolvida pelo candidato para o problema proposto. 
  A tarefa consiste no desenvolvimento de uma aplicação backend em Node.js ou Typescript que deverá ser executada a cada X minutos. Essa aplicação realizará consultas em uma API pública e utilizará os dados obtidos para criar elementos na base OZmap por meio de uma API. Além disso, são requisitos adicionais:
  * Tempo de intervalo entre cada execução da aplicação definido por uma variável de ambiente.
