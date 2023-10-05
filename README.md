@@ -15,27 +15,20 @@
 
 Olá, candidato!
 
-Bem-vindo ao nosso teste técnico para desenvolvedor pleno. Este teste é uma oportunidade para você demonstrar suas habilidades no campo de manipulação de dados. O objetivo é avaliar a solução que você desenvolverá para um problema específico.
+Bem-vindo ao nosso teste técnico para desenvolvedor júnior. Este teste é uma oportunidade para você demonstrar suas habilidades no campo de integrações. O objetivo é avaliar a solução que você desenvolverá para um problema específico.
 
-A tarefa consiste em criar uma aplicação backend em Typescript que realizará as seguintes ações:
+A tarefa consiste em criar uma aplicação backend em Node.js ou Typescript que realizará as seguintes ações:
 
-1. Ler um arquivo XLS fornecido.
-2. Salvar os dados lidos em um banco de dados MongoDB.
-3. Criar diversos elementos via API em uma base OZmap com base nos dados salvos no banco.
+1. A aplicação deve ser executada automaticamente a cada X minutos.
+2. Buscar e tratar dados de uma API pública externa.
+3. Criar elementos via API em uma base OZmap, com base nesses dados buscados na API pública externa.
 
 Além disso, temos alguns requisitos adicionais:
-
-* A aplicação deve ser executada em um contêiner Docker.
-* Deve haver uma conexão com o MongoDB via contêiner.
-* É necessário implementar testes automatizados.
-* Antes de criar elementos na base OZmap, os dados lidos devem ser validados.
-* A aplicação deve ter um sistema de tratamento de erros para lidar com possíveis falhas nas APIs externas ou na lógica da aplicação.
-* Deve ser utilizado um sistema de logs para a aplicação, e como diferencial, disponibilizar uma interface externa para consulta desses logs.
-* Você deve incluir um arquivo read.me com instruções sobre como executar a aplicação e informações de configuração.
-* A aplicação deve ser capaz de exportar relatórios de execução no formato CSV.
-* É necessário realizar o deploy da aplicação.
-
-Importante: A aplicação deve ser eficiente e capaz de lidar com grandes volumes de dados, considerando que a máquina onde está a base OZmap pode ter recursos limitados. Além disso, aproveite a capacidade do Node.js para executar múltiplas threads nativamente, sem a necessidade de módulos externos, para otimizar o uso dos recursos do sistema.
+ * Tempo de intervalo entre cada execução da aplicação definido por uma variável de ambiente.
+ * Implementação de um logger para registrar as ações realizadas pela aplicação.
+ * Criação de um endpoint para visualização dos logs da aplicação por meio do navegador.
+ * A cada execução da aplicação, deverá ser exportado um relatório que será incrementado com informações sobre as ações realizadas, incluindo aquelas que apresentarem erro.
+ * Elaboração de uma documentação para a aplicação.
 
 Boa sorte e divirta-se desenvolvendo a solução!
  
