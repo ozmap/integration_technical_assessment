@@ -19,13 +19,13 @@ Bem-vindo ao nosso teste técnico para desenvolvedor júnior. Este teste é uma 
 
 A tarefa consiste em criar uma aplicação backend em Node.js ou Typescript que realizará as seguintes ações:
 
-1. A aplicação deve ser executada automaticamente a cada X minutos.
-2. Buscar e tratar dados de uma API pública externa.
-3. Criar elementos via API em uma base OZmap, com base nesses dados buscados na API pública externa.
+1. Executar automaticamente a cada X minutos.
+2. A cada execução, buscar e tratar dados de uma API pública externa.
+3. E criar elementos via API em uma base OZmap, com base nesses dados buscados na API pública externa.
 
 Além disso, temos alguns requisitos adicionais:
  * Tempo de intervalo entre cada execução da aplicação definido por uma variável de ambiente.
- * Implementação de um logger para registrar as ações realizadas pela aplicação.
+ * Utilização de um logger para registrar as ações realizadas pela aplicação.
  * Criação de um endpoint para visualização dos logs da aplicação por meio do navegador.
  * A cada execução da aplicação, deverá ser exportado um relatório que será incrementado com informações sobre as ações realizadas, incluindo aquelas que apresentarem erro.
  * Elaboração de uma documentação para a aplicação.
